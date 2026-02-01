@@ -3,16 +3,16 @@ from pathlib import Path
 class ProjectScanner:
     def __init__(self, root_path: Path):
         self.root_path = root_path
-        # Carpetas a ignorar
+        # Carpetas
         self.ignore_dirs = {
             '.git', '__pycache__', 'node_modules', 'venv', '.venv', 
             'dist', 'build', 'architext.egg-info', '.vscode'
         }
-        # Archivos que no aportan a la documentación
+        # Archivos
         self.ignore_files = {
-            '.gitignore', 'pyproject.toml', 'LICENSE', '.env', 'package-lock.json'
+            '.gitignore', 'pyproject.toml', 'LICENSE', '.env', 'package-lock.json', "README_ARCHITEXT.md"
         }
-        # Extensiones de archivos binarios o pesados
+        # Extensiones
         self.ignore_exts = {
             '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', 
             '.pyc', '.exe', '.dll', '.so', '.bin', '.pdf'
