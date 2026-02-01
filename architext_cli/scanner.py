@@ -1,52 +1,63 @@
-import os
+from pathlib import Path
 
 class ProjectScanner:
-    def __init__(self, root_dir):
-        self.root_dir = root_dir
-        # Carpetas que no se leen
+    def __init__(self, root_path: Path):
+        self.root_path = root_path
+        # Carpetas a ignorar
         self.ignore_dirs = {
-            '.git', '__pycache__', 'node_modules', 'venv', 
-            '.venv', 'env', 'dist', 'build', '.next', '.idea'
+            '.git', '__pycache__', 'node_modules', 'venv', '.venv', 
+            'dist', 'build', 'architext.egg-info', '.vscode'
         }
-        
+        # Archivos que no aportan a la documentación
+        self.ignore_files = {
+            '.gitignore', 'pyproject.toml', 'LICENSE', '.env', 'package-lock.json'
+        }
+        # Extensiones de archivos binarios o pesados
         self.ignore_exts = {
             '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', 
             '.pyc', '.exe', '.dll', '.so', '.bin', '.pdf'
         }
 
-    def get_structure(self):
-        """Genera un mapa visual de las carpetas del proyecto."""
-        structure = []
-        for root, dirs, files in os.walk(self.root_dir):
-            # Filtrar carpetas ignoradas
-            dirs[:] = [d for d in dirs if d not in self.ignore_dirs]
-            
-            level = root.replace(self.root_dir, '').count(os.sep)
-            indent = ' ' * 4 * level
-            structure.append(f"{indent}{os.path.basename(root)}/")
-            
-            sub_indent = ' ' * 4 * (level + 1)
-            for f in files:
-                if not any(f.endswith(ext) for ext in self.ignore_exts):
-                    structure.append(f"{sub_indent}{f}")
-        return "\n".join(structure)
+    def get_structure(self) -> str:
+        """Genera un mapa visual del proyecto usando Path.rglob."""
+        lines = [f"{self.root_path.name}/"]
+        
+        # Ordenamos para que el resultado sea predecible
+        paths = sorted(self.root_path.rglob("*"))
+        
+        for path in paths:
+            # Comprobar si el path o alguno de sus padres está en la lista de ignorados
+            if any(part in self.ignore_dirs for part in path.parts):
+                continue
+            if path.name in self.ignore_files or path.suffix in self.ignore_exts:
+                continue
 
-    def get_key_files_content(self):
-        """Lee archivos críticos para entender el proyecto."""
-        # Archivos para entender el proyecto
-        key_patterns = ['package.json', 'requirements.txt', 'Dockerfile', 'docker-compose.yml', 'main.py', 'index.js', 'App.js']
-        content_summary = ""
+            # Calcular nivel de profundidad para la indentación
+            depth = len(path.relative_to(self.root_path).parts)
+            indent = "    " * depth
+            
+            if path.is_dir():
+                lines.append(f"{indent}{path.name}/")
+            else:
+                lines.append(f"{indent}{path.name}")
+                
+        return "\n".join(lines)
 
-        for root, dirs, files in os.walk(self.root_dir):
-            dirs[:] = [d for d in dirs if d not in self.ignore_dirs]
-            for f in files:
-                if f in key_patterns:
-                    file_path = os.path.join(root, f)
-                    try:
-                        with open(file_path, 'r', encoding='utf-8') as content:
-                            content_summary += f"\n--- Archivo: {f} ---\n"
-                            
-                            content_summary += "".join(content.readlines()[:100])
-                    except Exception as e:
-                        content_summary += f"\nError leyendo {f}: {e}\n"
-        return content_summary
+    def get_key_contents(self) -> str:
+        """Busca y lee los archivos de configuración más importantes."""
+        key_files = ['package.json', 'requirements.txt', 'Dockerfile', 'main.py']
+        summary = ""
+        
+        for name in key_files:
+            # Buscamos el archivo en cualquier lugar del proyecto (que no esté ignorado)
+            for path in self.root_path.rglob(name):
+                if any(part in self.ignore_dirs for part in path.parts):
+                    continue
+                
+                try:
+                    content = path.read_text(encoding='utf-8').splitlines()[:100]
+                    summary += f"\n--- Archivo: {path.relative_to(self.root_path)} ---\n"
+                    summary += "\n".join(content) + "\n"
+                except Exception as e:
+                    summary += f"\nError leyendo {name}: {e}\n"
+        return summary

@@ -1,0 +1,15 @@
+[project]
+name = "architext"
+version = "0.1.0"
+description = "AI-powered technical documentation generator"
+authors = [
+    {name = "Tu Nombre", email = "tu@email.com"}
+]
+dependencies = [
+    "typer[all]",
+    "rich",
+    "requests",
+]
+
+[project.scripts]
+architext = "architext_cli.main:app"

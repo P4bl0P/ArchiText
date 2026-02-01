@@ -1,36 +1,45 @@
 import typer
+from pathlib import Path
 from rich.console import Console
 from rich.panel import Panel
 from .scanner import ProjectScanner
 
-# Inicializamos la consola de Rich y la app de Typer
-app = typer.Typer(name="Architext", help="Generador automático de documentación técnica.")
+app = typer.Typer(help="Architext - Generador de Documentación Profesional.")
 console = Console()
 
 @app.command()
-def scan(path: str = typer.Argument(".", help="Ruta del proyecto a analizar")):
-    """
-    Analiza un directorio y muestra qué información enviaría a la IA.
-    """
-    console.print(Panel.fit("🔍 [bold blue]Architext[/bold blue] - Escaneando proyecto...", border_style="blue"))
+def scan(
+    path: Path = typer.Option(Path("."), help="Ruta del proyecto a analizar")
+):
+    """Analiza la estructura de un directorio."""
     
-    scanner = ProjectScanner(path)
+    # Normalizamos la ruta absoluta
+    target_path = path.resolve()
     
-    # 1. Obtener estructura
-    structure = scanner.get_structure()
+    if not target_path.exists():
+        console.print(f"[bold red]Error:[/bold red] La ruta '{target_path}' no existe.")
+        raise typer.Exit(1)
+
+    console.print(Panel.fit(
+        f"🔍 [bold blue]Architext[/bold blue]\n[dim]Escaneando:[/dim] [white]{target_path}[/white]", 
+        border_style="blue"
+    ))
+
+    scanner = ProjectScanner(target_path)
+    
+    with console.status("[bold yellow]Analizando estructura...[/bold yellow]"):
+        structure = scanner.get_structure()
+    
     console.print("\n[bold yellow]📂 Estructura detectada:[/bold yellow]")
     console.print(structure)
     
-    # 2. Obtener archivos clave
-    console.print("\n[bold yellow]📄 Analizando archivos de configuración...[/bold yellow]")
-    content = scanner.get_key_files_content()
+    console.print("\n[bold yellow]📄 Buscando contenido clave...[/bold yellow]")
+    content = scanner.get_key_contents()
     
     if content:
-        console.print("[green]✅ Archivos clave encontrados y leídos.[/green]")
+        console.print("[bold green]✅ Archivos clave analizados correctamente.[/bold green]")
     else:
-        console.print("[red]⚠ No se encontraron archivos de configuración clave.[/red]")
-
-    console.print("\n[bold green]Listo.[/bold green] El scanner funciona correctamente.")
+        console.print("[bold red]⚠ No se encontraron archivos de configuración conocidos.[/bold red]")
 
 if __name__ == "__main__":
     app()
