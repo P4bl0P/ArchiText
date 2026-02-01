@@ -10,7 +10,7 @@ class ProjectScanner:
         }
         # Archivos
         self.ignore_files = {
-            '.gitignore', 'pyproject.toml', 'LICENSE', '.env', 'package-lock.json', "README_ARCHITEXT.md"
+            '.gitignore', 'pyproject.toml', 'LICENSE', '.env', 'package-lock.json', 'README.md'
         }
         # Extensiones
         self.ignore_exts = {

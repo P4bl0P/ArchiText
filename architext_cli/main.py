@@ -42,7 +42,7 @@ def generate(
         # console.print(f"[dim]{new_readme[:50]}...[/dim]")
 
     # Escritura del archivo en la raíz del proyecto analizado
-    readme_path = target_path / "README_ARCHITEXT.md"
+    readme_path = target_path / "README.md"
     with open(readme_path, "w", encoding="utf-8") as f:
         f.write(new_readme)
 
