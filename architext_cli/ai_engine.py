@@ -86,7 +86,7 @@ FINAL COMMAND: Generate the professional README.md now."""
                     "AI may make mistakes; please review and validate installation steps and descriptions before publishing.</i></sup>"
                 )
 
-            return data.get("response") + disclaimer or "⚠️ No hay respuesta de la IA"
+            return (data.get("response") + disclaimer) or "⚠️ No hay respuesta de la IA"
             
         except Exception as e:
             return f"Error crítico: {str(e)}"
