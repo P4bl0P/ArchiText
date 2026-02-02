@@ -22,6 +22,9 @@ ArchiText is a Python-based tool that helps you create high-quality README files
 [![Python](https://img.shields.io/badge/Python-3.9-blue)](https://www.python.org/)
 [![Typer](https://img.shields.io/badge/Typer-0.5.2-yellow)](https://typer.tiangolo.com/)
 [![Requests](https://img.shields.io/badge/Requests-2.31.0-blue)](https://requests.readthedocs.io/)
+[![Ollama](https://img.shields.io/badge/Ollama-Local_LLM-white?logo=ollama&logoColor=black)](https://ollama.com/)
+[![Llama 3](https://img.shields.io/badge/Llama_3-8B--Instruct-0467DF?logo=meta&logoColor=white)](https://llama.meta.com/)
+[![Model](https://img.shields.io/badge/Model-Local_Inference-green)](#)
 
 ### Step-by-step Installation and Usage
 1. Clone the repository: `git clone https://github.com/P4bl0P/ArchiText.git`
