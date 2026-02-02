@@ -5,7 +5,7 @@ class AIEngine:
         self.model = model
         self.url = "http://127.0.0.1:11434/api/generate"
 
-    def generate_readme(self, ecosystem: str, structure: str, context: str,  lang: str = "auto") -> str:
+    def generate_readme(self, ecosystem: str, structure: str, context: str,  lang: str = "auto", extra_instructions: str = "") -> str:
        # Definimos la orden de idioma de forma muy clara
         if lang == "es":
             target_lang = "Escribe el README exclusivamente en ESPAÑOL."
@@ -14,8 +14,13 @@ class AIEngine:
         else:
             target_lang = "Detect the language of the code and comments and respond in that language."
 
+        #User Section
+        if extra_instructions:
+            user_section = f"\n### USER SPECIFIC INSTRUCTIONS (HIGH PRIORITY):\n{extra_instructions}\n"
+
         prompt = f"""### ROLE
 Act as a Senior Full-Stack Developer and Professional Technical Writer.
+{user_section}
 Your goal is to create a modern, clean, and aesthetic README.md for GitHub.
 
 ### PROJECT CONTEXT

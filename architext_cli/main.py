@@ -13,7 +13,8 @@ def generate(
     ctx: typer.Context,
     path: Path = typer.Option(Path("."), "--path", "-p", help="Ruta del proyecto"),
     model: str = typer.Option("llama3", "--model", "-m", help="Modelo de IA"),
-    lang: str = typer.Option("auto", "--lang", "-l", help="Idioma: 'es', 'en' o 'auto'")
+    lang: str = typer.Option("auto", "--lang", "-l", help="Idioma: 'es', 'en' o 'auto'"),
+    custom_prompt: str = typer.Option("", "--prompt", "-pr", help="Instrucciones adicionales para la IA")
 ):
     """
     Comando principal: Genera o actualiza el README.md automáticamente.
@@ -37,7 +38,7 @@ def generate(
         context = scanner.get_key_contents()
         
 
-        new_readme = engine.generate_readme(ecosystem, structure, context, lang=lang)
+        new_readme = engine.generate_readme(ecosystem, structure, context, lang=lang, extra_instructions=custom_prompt)
 
     if "Error" in new_readme or "⚠️" in new_readme:
         console.print(f"[bold red]{new_readme}[/bold red]")
