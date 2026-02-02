@@ -1,6 +1,10 @@
 <img src="public/favicon-96x96.png" align="right" width="100" style="border-radius: 20px; margin-left: 20px;">
 
-<p style="font-size: 2em; font-weight: bold; font-style: italic; margin-bottom: 0;">ArchiText</p>
+<br />
+<br />
+<br />
+
+# *ArchiText*
 
 Automatically generate or update your README.md with AI-powered insights.
 
