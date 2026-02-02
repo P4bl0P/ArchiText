@@ -3,6 +3,7 @@ from pathlib import Path
 from rich.console import Console
 from .scanner import ProjectScanner
 from .ai_engine import AIEngine
+from .health import check_infrastructure
 
 app = typer.Typer()
 console = Console()
@@ -21,6 +22,9 @@ def generate(
     if ctx.invoked_subcommand:
         return
 
+    if not check_infrastructure():
+        raise typer.Exit(code=1)
+
     target_path = path.resolve()
     scanner = ProjectScanner(target_path)
     engine = AIEngine(model=model)
@@ -28,11 +32,12 @@ def generate(
     console.print(f"[bold green]Architext[/bold green] Actualizando documentación en: [white]{target_path}[/white]")
 
     with console.status("[bold blue]Analizando cambios en el proyecto...[/bold blue]"):
+        ecosystem = scanner.detect_ecosystem()
         structure = scanner.get_structure()
         context = scanner.get_key_contents()
         
 
-        new_readme = engine.generate_readme(structure, context, lang=lang)
+        new_readme = engine.generate_readme(ecosystem, structure, context, lang=lang)
 
     if "Error" in new_readme or "⚠️" in new_readme:
         console.print(f"[bold red]{new_readme}[/bold red]")

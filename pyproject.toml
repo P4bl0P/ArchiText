@@ -3,7 +3,7 @@ name = "architext"
 version = "0.1.0"
 description = "AI-powered technical documentation generator"
 authors = [
-    {name = "Tu Nombre", email = "tu@email.com"}
+    {name = "P4vl0", email = "pablo689perez@gmail.com"}
 ]
 dependencies = [
     "typer[all]",

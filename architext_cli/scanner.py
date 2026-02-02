@@ -18,6 +18,19 @@ class ProjectScanner:
             '.pyc', '.exe', '.dll', '.so', '.bin', '.pdf'
         }
 
+    def detect_ecosystem(self):
+      files = [f.name for f in self.root_path.iterdir() if f.is_file()]
+      
+      if 'pyproject.toml' in files:
+          return "Python (Poetry/Flit/Pip install -e .)"
+      if 'package.json' in files:
+          return "Node.js (npm/yarn/pnpm)"
+      if 'requirements.txt' in files:
+          return "Python (pip install -r requirements.txt)"
+      if 'go.mod' in files:
+          return "Go (go build)"
+      return "Desconocido (analiza el código para deducirlo)"
+
     def get_structure(self) -> str:
         """Genera un mapa visual del proyecto usando Path.rglob."""
         lines = [f"{self.root_path.name}/"]
