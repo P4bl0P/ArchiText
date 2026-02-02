@@ -6,6 +6,7 @@ class AIEngine:
         self.url = "http://127.0.0.1:11434/api/generate"
 
     def generate_readme(self, ecosystem: str, structure: str, context: str,  lang: str = "auto", extra_instructions: str = "") -> str:
+        user_section = ""
        # Definimos la orden de idioma de forma muy clara
         if lang == "es":
             target_lang = "Escribe el README exclusivamente en ESPAÑOL."
